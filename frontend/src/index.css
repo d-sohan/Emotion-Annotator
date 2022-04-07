@@ -1,0 +1,17 @@
+main {
+    min-height: 80vh;
+}
+
+.frame-img {
+    max-height: 300px;
+    width: auto;
+}
+
+.preview {
+    max-height: 500px;
+    width: auto;
+}
+
+.left-label .right-label .ib{
+    display: inline;
+}
