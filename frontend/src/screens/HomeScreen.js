@@ -1,8 +1,19 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Button } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
 
-const HomeScreen = () => {
+const HomeScreen = ({ setFinalProps }) => {
+  useEffect(() => {
+    setFinalProps({
+      temp: '',
+      name: '',
+      type: '',
+      annotation: null,
+      loading: false,
+      download: false,
+      error: false,
+    });
+  }, []);
   return (
     <div>
       <h2 className="my-3">Choose Input File type</h2>
