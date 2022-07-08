@@ -19,9 +19,10 @@ The generated .csv file will contain a row of data for each uploaded image. The 
 
 1. Upload a .mp4 video file
 2. While the video is paused, move the seek bar of the video player to the position where the frame needs to be captured.
-3. Click on _Capture Frame_![Screenshot from 2022-07-09 01-44-28](https://user-images.githubusercontent.com/71932686/178064267-a01a8a55-15cf-464a-9ac1-14da42ed5176.png)
- button. You can also click on it while the video is playing to capture the current frame.
+3. Click on _Capture Frame_ button. You can also click on it while the video is playing to capture the current frame.
 
+
+![Screenshot from 2022-07-09 01-44-28](https://user-images.githubusercontent.com/71932686/178064267-a01a8a55-15cf-464a-9ac1-14da42ed5176.png)
 After the frames have been captured, they can be uploaded in the same way as images.
 
 
