@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
-import { Button, Card, Col, Row } from 'react-bootstrap';
+import { Badge, Button, Card, Col, Row } from 'react-bootstrap';
 import Annotate from './Annotate';
 
 const Frame = (props) => {
   const [hasAnnotated, setHasAnnotated] = useState(false);
+  const [annotatedData, setAnnotatedData] = useState(null);
 
   function handleAnnotate(data) {
     setHasAnnotated(true);
+    setAnnotatedData(data);
     props.onAnnotate(data);
   }
   return (
@@ -19,9 +21,18 @@ const Frame = (props) => {
           <Col>
             <div className="frame-content">
               <div className="frame-x">
-                <Button variant="outline-danger" onClick={props.onDelete}>
-                  &#x2715;
-                </Button>
+                <span>
+                  {hasAnnotated && (
+                    <Badge pill bg="primary">
+                      {annotatedData.toUpperCase()}
+                    </Badge>
+                  )}
+                </span>
+                <span>
+                  <Button variant="outline-danger" onClick={props.onDelete}>
+                    &#x2715;
+                  </Button>
+                </span>
               </div>
               <div className="frame-annotate">
                 <Annotate heading={false} addAnnotation={handleAnnotate} />

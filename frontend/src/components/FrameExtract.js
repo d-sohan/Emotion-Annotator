@@ -3,7 +3,7 @@ import React, { createRef, useEffect, useState } from 'react';
 import { Button, Alert } from 'react-bootstrap';
 import { useHistory } from 'react-router-dom';
 import Frame from './Frame';
-import Preview from './Preview';
+import VidPreview from './VidPreview';
 
 function fileNamer(width, val) {
   const p = Math.pow(10, width);
@@ -110,7 +110,7 @@ const FrameExtract = (props) => {
 
   return (
     <div>
-      <Preview inputType="video" ref={vidRef} src={props.src} title="uploaded Vid" />
+      <VidPreview ref={vidRef} src={props.src} title="uploaded Vid" />
       <Button className="mb-3" onClick={handleCapture}>
         Capture Frame
       </Button>

@@ -1,9 +1,10 @@
 import axios from 'axios';
-import React, { useEffect } from 'react';
-import { Button, Spinner } from 'react-bootstrap';
+import React, { useEffect, useState } from 'react';
+import { Badge, Button, ListGroup, ListGroupItem, Spinner } from 'react-bootstrap';
 import { useHistory } from 'react-router-dom';
 
 const FinalScreen = ({ setFinalProps, finalProps }) => {
+  const [errorFiles, setErrorFiles] = useState([]);
   const history = useHistory();
   useEffect(() => {
     if (finalProps.loading) {
@@ -24,7 +25,7 @@ const FinalScreen = ({ setFinalProps, finalProps }) => {
               download: true,
               error: false,
             });
-          } else {
+          } else if (res.data === 'failed') {
             setFinalProps({
               temp: finalProps.temp,
               name: finalProps.name,
@@ -32,6 +33,17 @@ const FinalScreen = ({ setFinalProps, finalProps }) => {
               annotation: finalProps.annotation,
               loading: false,
               download: false,
+              error: true,
+            });
+          } else {
+            setErrorFiles(res.data);
+            setFinalProps({
+              temp: finalProps.temp,
+              name: finalProps.name,
+              type: finalProps.type,
+              annotation: finalProps.annotation,
+              loading: false,
+              download: true,
               error: true,
             });
           }
@@ -47,6 +59,14 @@ const FinalScreen = ({ setFinalProps, finalProps }) => {
   }
 
   function handleDownload() {
+    let downloadName = finalProps.name;
+    if (finalProps.type === 'image') {
+      if (finalProps.annotation.length > 1) {
+        downloadName = 'result';
+      } else {
+        downloadName = finalProps.name[0].name;
+      }
+    }
     axios({
       url: `/${finalProps.type}/download`,
       method: 'POST',
@@ -60,7 +80,7 @@ const FinalScreen = ({ setFinalProps, finalProps }) => {
         const downloadUrl = window.URL.createObjectURL(new Blob([data]));
         const link = document.createElement('a');
         link.href = downloadUrl;
-        link.setAttribute('download', `${finalProps.name}.csv`);
+        link.setAttribute('download', `${downloadName}.csv`);
         document.body.appendChild(link);
         link.click();
         link.remove();
@@ -83,6 +103,18 @@ const FinalScreen = ({ setFinalProps, finalProps }) => {
     });
   }
 
+  function cleanUp() {
+    axios
+      .post(`/${finalProps.type}/cleanup`, { temp: finalProps.temp })
+      .then((res) => {
+        goHome();
+      })
+      .catch((err) => {
+        console.log(err);
+        goHome();
+      });
+  }
+
   if (finalProps.loading) {
     return (
       <div className="final-placeholder">
@@ -90,7 +122,7 @@ const FinalScreen = ({ setFinalProps, finalProps }) => {
         <h3 className="processing">Processing...</h3>
       </div>
     );
-  } else if (finalProps.download) {
+  } else if (finalProps.download && !finalProps.error) {
     return (
       <div className="final-placeholder">
         <h2 className="text-center">Your Download is ready.</h2>
@@ -101,7 +133,7 @@ const FinalScreen = ({ setFinalProps, finalProps }) => {
         </div>
       </div>
     );
-  } else if (finalProps.error) {
+  } else if (finalProps.error && !finalProps.download) {
     return (
       <div className="final-placeholder">
         <h2 className="text-center">Failed to Process your input.</h2>
@@ -114,9 +146,39 @@ const FinalScreen = ({ setFinalProps, finalProps }) => {
           <Button variant="danger" className="me-3" size="lg" onClick={handleRetry}>
             Retry
           </Button>
-          <Button variant="primary" size="lg" onClick={goHome}>
+          <Button variant="primary" size="lg" onClick={cleanUp}>
             Home
           </Button>
+        </div>
+      </div>
+    );
+  } else if (finalProps.download && finalProps.error) {
+    return (
+      <div className="final-placeholder">
+        <h2 className="text-center">Your Download is ready.</h2>
+        <h4 className="text-center">However, some files couldn't be processed.</h4>
+        <p className="text-center">This could be because we didn't find a face in those files.</p>
+
+        <div className="text-center mb-5">
+          <Button variant="warning" className="me-3" size="lg" onClick={handleDownload}>
+            Download
+          </Button>
+          <Button variant="primary" size="lg" onClick={cleanUp}>
+            Home
+          </Button>
+        </div>
+        <div>
+          <div className="error-label mb-2">
+            <span>The following files were not processed:</span>
+            <span>
+              <Badge bg="danger">{errorFiles.length}</Badge>
+            </span>
+          </div>
+          <ListGroup className="error-lg">
+            {errorFiles.map((fn) => (
+              <ListGroupItem>{fn}</ListGroupItem>
+            ))}
+          </ListGroup>
         </div>
       </div>
     );
