@@ -8,7 +8,7 @@ The generated CSV file can be used as a dataset to train ML models for tasks lik
 ## Usage
 **Note:** Install and test run the dockerised version of OpenFace from its Github repo before proceeding
 
-There are tow types of inputs: images and video.
+There are two types of inputs: images and video.
 ### Images
 The user can upload one or more images in .png or .jpg format. 
 
